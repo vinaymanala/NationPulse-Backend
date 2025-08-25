@@ -7,7 +7,7 @@ namespace Backend.Infrastructure;
 
 public partial class AppDbContext : DbContext
 {
-    public string? _connectionString;
+    private readonly string? _connectionString;
 
     public AppDbContext(string connectionString)
     {
@@ -39,7 +39,6 @@ public partial class AppDbContext : DbContext
             // .UseSnakeCaseNamingConvention()
             .EnableDetailedErrors()
             .EnableSensitiveDataLogging();
-
     }
 
 }
