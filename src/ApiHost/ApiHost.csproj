@@ -4,6 +4,13 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <RootNamespace>NationPulse.Backend</RootNamespace>
+    <NoWarn>CA1848;CS1591</NoWarn>
+    <!--
+      👇 Generate XML documentation for Swagger docs; see SetupSwaggerExtension.cs
+    -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,5 +23,25 @@
     <ProjectReference Include="..\Modules\Modules.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
+
+  <!--
+    👇 Generates the OpenAPI schema file into api-spec directory.
+  -->
+  <Target Name="GenerateSpec" AfterTargets="Build" Condition="$(GEN)=='true'">
+    <Message Text="Generating OpenAPI schema file." Importance="high" />
+    <Exec Command="dotnet tool restore" />
+    <!-- Generate the external API.  See SetupSwagger for this doc. -->
+    <Exec Command="dotnet swagger tofile --output ../api-spec/schema-dashboard.json $(OutputPath)$(AssemblyName).dll v1-dashboard" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" WorkingDirectory="$(ProjectDir)" />
+    <!-- Generate the admin API.  See SetupSwagger for this doc. -->
+    <Exec Command="dotnet swagger tofile --output ../api-spec/schema-population.json $(OutputPath)$(AssemblyName).dll v1-population" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" WorkingDirectory="$(ProjectDir)" />
+    <!-- Generate the reporting API.  See SetupSwagger for this doc. -->
+    <Exec Command="dotnet swagger tofile --output ../api-spec/schema-health.json $(OutputPath)$(AssemblyName).dll v1-health" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" WorkingDirectory="$(ProjectDir)" />
+    <!-- Generate the reporting API.  See SetupSwagger for this doc. -->
+    <Exec Command="dotnet swagger tofile --output ../api-spec/schema-economy.json $(OutputPath)$(AssemblyName).dll v1-economy" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" WorkingDirectory="$(ProjectDir)" />
+    <!-- Generate the reporting API.  See SetupSwagger for this doc. -->
+    <Exec Command="dotnet swagger tofile --output ../api-spec/schema-employment.json $(OutputPath)$(AssemblyName).dll v1-employment" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" WorkingDirectory="$(ProjectDir)" />
+    <!-- Generate the reporting API.  See SetupSwagger for this doc. -->
+    <Exec Command="dotnet swagger tofile --output ../api-spec/schema-performance.json $(OutputPath)$(AssemblyName).dll v1-performance" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" WorkingDirectory="$(ProjectDir)" />
+  </Target>
 
 </Project>
