@@ -22,14 +22,14 @@ public class DashboardController : ControllerBase
 
     }
     [ApiExplorerSettings(GroupName = Constants.DashboardApiGroup)]
-    [HttpGet($"api/population", Name = nameof(GetPopulationChartByCountry))]
-    public async Task<ActionResult<IEnumerable<PopulationDto>>> GetPopulationChartByCountry()
+    [HttpGet("api/population/{noOfCountries}", Name = nameof(GetPopulationChartByCountry))]
+    public async Task<ActionResult<IEnumerable<PopulationDto>>> GetPopulationChartByCountry(short noOfCountries)
     {
         var isSuccess = default(bool);
         var entities = new List<PerfPopulationGrowthEntity>();
         try
         {
-            FormattableString query = DashboardQuery.GetPopulationChartByCountryQuery();
+            FormattableString query = DashboardQuery.GetPopulationChartByCountryQuery(noOfCountries);
             entities = await _context.perfgrowthpopulationds
            .FromSql(query).ToListAsync();
             isSuccess = true;
