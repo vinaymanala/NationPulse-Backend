@@ -1,4 +1,4 @@
-version: '1.0.0'
+# version: '1.0.0'
 
 services:
   postgres:
@@ -19,7 +19,6 @@ services:
       - "5432:5432"
     networks:
       - nationPulseDB
-
 
 networks:
   nationPulseDB:
