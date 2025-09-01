@@ -21,27 +21,59 @@ public class PerformanceGrowthController : ControllerBase
     }
 
     [ApiExplorerSettings(GroupName = Constants.PerformanceApiGroup)]
-    [HttpGet("/api/gdp/{countryCode}", Name = nameof(GetGDPPerfGrowthByCountry))]
+    [HttpGet("api/gdp/{countryCode}", Name = nameof(GetGDPPerfGrowthByCountry))]
     public async Task<ActionResult<IEnumerable<PerfGDPGrowthDto>>> GetGDPPerfGrowthByCountry(string countryCode)
     {
-        FormattableString query = PerformanceGrowthQuery.GetPerfGrowthOfGDPQuery(countryCode);
-        var entities = await _context.perfgrowthgdpds
-        .FromSql(query)
-        .ToListAsync();
+        var isSuccess = default(bool);
+        var entities = new List<PerfGDPGrowthEntity>();
+        try
+        {
+            FormattableString query = PerformanceGrowthQuery.GetPerfGrowthOfGDPQuery(countryCode);
+            entities = await _context.perfgrowthgdpds
+            .FromSql(query)
+            .ToListAsync();
+            isSuccess = true;
+        }
+        catch (System.Exception ex)
+        {
+            isSuccess = false;
+            throw new Exception("Error fetching performance growth gdp data :", ex);
+        }
 
-        return Ok(entities);
+        var Response = new
+        {
+            data = entities,
+            isSuccess = isSuccess.ToString(),
+        };
+        return Ok(Response);
     }
 
     [ApiExplorerSettings(GroupName = Constants.PerformanceApiGroup)]
-    [HttpGet("/api/population/{countryCode}", Name = nameof(GetPopulationPerfGrowthByCountry))]
+    [HttpGet("api/population/{countryCode}", Name = nameof(GetPopulationPerfGrowthByCountry))]
     public async Task<ActionResult<IEnumerable<PerfGDPGrowthDto>>> GetPopulationPerfGrowthByCountry(string countryCode)
     {
-        FormattableString query = PerformanceGrowthQuery.GetPerfGrowthOfWorkingPopulation(countryCode);
-        var entities = await _context.perfgrowthpopulationds
-        .FromSql(query)
-        .ToListAsync();
+        var isSuccess = default(bool);
+        var entities = new List<PerfPopulationGrowthEntity>();
+        try
+        {
+            FormattableString query = PerformanceGrowthQuery.GetPerfGrowthOfWorkingPopulation(countryCode);
+            entities = await _context.perfgrowthpopulationds
+            .FromSql(query)
+            .ToListAsync();
+            isSuccess = true;
+        }
+        catch (System.Exception ex)
+        {
+            isSuccess = false;
+            throw new Exception("Error fetching performance growth population data", ex);
+        }
 
-        return Ok(entities);
+        var Response = new
+        {
+            data = entities,
+            isSuccess = isSuccess.ToString(),
+        };
+        return Ok(Response);
     }
 
 }

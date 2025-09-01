@@ -21,14 +21,29 @@ public class HealthController : ControllerBase
     }
 
     [ApiExplorerSettings(GroupName = Constants.HealthApiGroup)]
-    [HttpGet("/api/health/{countryCode}", Name = nameof(GetHealthStatusByCountryCode))]
+    [HttpGet("api/country/{countryCode}", Name = nameof(GetHealthStatusByCountryCode))]
     public async Task<ActionResult<IEnumerable<HealthEntity>>> GetHealthStatusByCountryCode(string countryCode)
     {
-        FormattableString query = HealthQuery.GetHealthStatusByCountryCodeQuery(countryCode);
-        var entities = await _context.healthstatusds
-        .FromSql(query)
-        .ToListAsync();
-
-        return Ok(entities);
+        var isSuccess = default(bool);
+        var entities = new List<HealthEntity>();
+        try
+        {
+            FormattableString query = HealthQuery.GetHealthStatusByCountryCodeQuery(countryCode);
+            entities = await _context.healthstatusds
+           .FromSql(query)
+           .ToListAsync();
+            isSuccess = true;
+        }
+        catch (System.Exception ex)
+        {
+            isSuccess = false;
+            throw new Exception("Error fetching health data", ex);
+        }
+        var Response = new
+        {
+            data = entities,
+            isSuccess = isSuccess.ToString(),
+        };
+        return Ok(Response);
     }
 }

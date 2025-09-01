@@ -23,13 +23,30 @@ public class PopulationController : ControllerBase
 
 
     [ApiExplorerSettings(GroupName = Constants.PopulationApiGroup)]
-    [HttpGet("/api/population/{countryCode}/", Name = nameof(GetPopulationByCountryCode))]
+    [HttpGet("api/country/{countryCode}/", Name = nameof(GetPopulationByCountryCode))]
     public async Task<ActionResult<IEnumerable<PopulationDto>>> GetPopulationByCountryCode(string countryCode)
     {
-        FormattableString query = PopulationQuery.GetPopulationByCountryCodeQuery(countryCode);
-        var entities = await _context.populationds
-        .FromSql(query)
-        .ToListAsync();
-        return Ok(entities);
+        var isSuccess = default(bool);
+        var entities = new List<PopulationEntity>();
+        try
+        {
+            FormattableString query = PopulationQuery.GetPopulationByCountryCodeQuery(countryCode);
+            entities = await _context.populationds
+           .FromSql(query)
+           .ToListAsync();
+            isSuccess = true;
+        }
+        catch (System.Exception ex)
+        {
+            isSuccess = false;
+            throw new Exception("Error fetching  population data", ex);
+        }
+
+        var Response = new
+        {
+            data = entities,
+            isSuccess = isSuccess.ToString(),
+        };
+        return Ok(Response);
     }
 }
