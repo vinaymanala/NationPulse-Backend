@@ -13,9 +13,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCustomSwagger();
 builder.Services.AddDataStore();
 builder.Services.AddCustomControllers();
+builder.Services.AddCustomCors();
+
+Console.WriteLine("Setup completed.");
 
 var app = builder.Build();
 
+app.UseCors("AllowSpecificOrigin");
 app.UseSwagger();
 app.UseSwaggerUI(options =>
     {
