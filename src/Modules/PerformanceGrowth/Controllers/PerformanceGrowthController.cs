@@ -33,7 +33,7 @@ public class PerformanceGrowthController : ControllerBase
 
     [ApiExplorerSettings(GroupName = Constants.PerformanceApiGroup)]
     [HttpGet("api/population/{countryCode}", Name = nameof(GetPopulationPerfGrowthByCountry))]
-    public async Task<ActionResult<IEnumerable<PerfGDPGrowthDto>>> GetPopulationPerfGrowthByCountry(string countryCode)
+    public async Task<ActionResult> GetPopulationPerfGrowthByCountry(string countryCode)
     {
         var data = await _service.GetPopulationPerfGrowthByCountryDataAsync<PerfPopulationGrowthDto>(countryCode);
         return Ok(data);

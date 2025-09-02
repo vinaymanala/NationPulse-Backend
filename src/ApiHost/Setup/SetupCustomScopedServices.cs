@@ -9,7 +9,6 @@ public static class SetupCustomScopedServices
 {
     public static void AddCustomScopedServices(this IServiceCollection services)
     {
-        services.AddAutoMapper(typeof(Program).Assembly);
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IDashboardRepository, DashboardRepository>();
         services.AddScoped<IPopulationService, PopulationService>();

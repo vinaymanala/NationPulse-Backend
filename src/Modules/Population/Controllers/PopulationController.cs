@@ -27,7 +27,7 @@ public class PopulationController : ControllerBase
 
     [ApiExplorerSettings(GroupName = Constants.PopulationApiGroup)]
     [HttpGet("api/country/{countryCode}/", Name = nameof(GetPopulationByCountryCode))]
-    public async Task<ActionResult<IEnumerable<PopulationDto>>> GetPopulationByCountryCode(string countryCode)
+    public async Task<ActionResult> GetPopulationByCountryCode(string countryCode)
     {
         var Response = await _service.GetPopulationDataByCountryCodeAsync<PopulationDto>(countryCode);
         return Ok(Response);

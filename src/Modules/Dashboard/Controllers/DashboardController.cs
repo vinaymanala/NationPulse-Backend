@@ -28,24 +28,24 @@ public class DashboardController : ControllerBase
     [HttpGet("api/population/{noOfCountries}", Name = nameof(GetPopulationChartByCountry))]
     public async Task<ActionResult> GetPopulationChartByCountry(short noOfCountries)
     {
-        var Response = await _service.GetPopulationDataAsync<PopulationDto>(noOfCountries);
-        return Ok(Response);
+        var data = await _service.GetPopulationDataAsync<PerfPopulationGrowthDto>(noOfCountries);
+        return Ok(data);
     }
 
     [ApiExplorerSettings(GroupName = Constants.DashboardApiGroup)]
     [HttpGet($"api/health", Name = nameof(GetHealthChartByCountry))]
     public async Task<ActionResult> GetHealthChartByCountry()
     {
-        var Response = await _service.GetHealthDataAsync<HealthDto>();
-        return Ok(Response);
+        var data = await _service.GetHealthDataAsync<HealthDto>();
+        return Ok(data);
     }
 
     [ApiExplorerSettings(GroupName = Constants.DashboardApiGroup)]
     [HttpGet($"api/gdppercapita", Name = nameof(GetGDPPerCapitaChartByCountry))]
     public async Task<ActionResult> GetGDPPerCapitaChartByCountry()
     {
-        var Response = await _service.GetGdpPerCapitaDataAsync<GDPPerCapitaDto>();
-        return Ok(Response);
+        var data = await _service.GetGdpPerCapitaDataAsync<GDPPerCapitaDto>();
+        return Ok(data);
     }
 
 

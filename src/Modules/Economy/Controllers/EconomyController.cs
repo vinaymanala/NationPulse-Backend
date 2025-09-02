@@ -25,14 +25,14 @@ public class EconomyController : ControllerBase
 
     [ApiExplorerSettings(GroupName = Constants.EconomyApiGroup)]
     [HttpGet("api/governmentdata/country/{countryCode}", Name = nameof(GetGovernmentDataByCountryCode))]
-    public async Task<ActionResult<IEnumerable<GovernmentDataDto>>> GetGovernmentDataByCountryCode(string countryCode)
+    public async Task<ActionResult> GetGovernmentDataByCountryCode(string countryCode)
     {
         var data = await _service.GetGovernmentDataByCountryCodeIdAsync<GovernmentDataDto>(countryCode);
         return Ok(data);
     }
     [ApiExplorerSettings(GroupName = Constants.EconomyApiGroup)]
     [HttpGet("api/gdppercapita/country/{countryCode}", Name = nameof(GetGDPPerCapitaDataByCountryCode))]
-    public async Task<ActionResult<IEnumerable<GovernmentDataDto>>> GetGDPPerCapitaDataByCountryCode(string countryCode)
+    public async Task<ActionResult> GetGDPPerCapitaDataByCountryCode(string countryCode)
     {
         var data = await _service.GetGDPPerCapitaDataByCountryCodeIdAsync<GDPPerCapitaDto>(countryCode);
         return Ok(data);

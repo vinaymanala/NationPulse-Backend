@@ -4,11 +4,12 @@ using Backend.ApiHost.Setup;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<ApiHostConfig>(builder.Configuration.GetSection(nameof(ApiHostConfig)));
-
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 Console.WriteLine("Starting the setup...");
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddCustomScopedServices();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCustomSwagger();
 builder.Services.AddDataStore();
