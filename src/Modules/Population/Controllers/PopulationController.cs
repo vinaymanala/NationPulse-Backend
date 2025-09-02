@@ -1,6 +1,7 @@
 
 using System.Text.RegularExpressions;
 
+using Backend.Core.Interfaces;
 using Backend.Core.Models.Entities;
 using Backend.Core.Queries;
 using Backend.Core.Utils;
@@ -16,9 +17,11 @@ namespace Backend.Modules.Population.Controllers;
 public class PopulationController : ControllerBase
 {
     private readonly AppDbContext _context;
-    public PopulationController(AppDbContext context)
+    private readonly IPopulationService _service;
+    public PopulationController(AppDbContext context, IPopulationService service)
     {
         _context = context;
+        _service = service;
     }
 
 
@@ -26,27 +29,7 @@ public class PopulationController : ControllerBase
     [HttpGet("api/country/{countryCode}/", Name = nameof(GetPopulationByCountryCode))]
     public async Task<ActionResult<IEnumerable<PopulationDto>>> GetPopulationByCountryCode(string countryCode)
     {
-        var isSuccess = default(bool);
-        var entities = new List<PopulationEntity>();
-        try
-        {
-            FormattableString query = PopulationQuery.GetPopulationByCountryCodeQuery(countryCode);
-            entities = await _context.populationds
-           .FromSql(query)
-           .ToListAsync();
-            isSuccess = true;
-        }
-        catch (System.Exception ex)
-        {
-            isSuccess = false;
-            throw new Exception("Error fetching  population data", ex);
-        }
-
-        var Response = new
-        {
-            data = entities,
-            isSuccess = isSuccess.ToString(),
-        };
+        var Response = await _service.GetPopulationDataByCountryCodeAsync<PopulationDto>(countryCode);
         return Ok(Response);
     }
 }

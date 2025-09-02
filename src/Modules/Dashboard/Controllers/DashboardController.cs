@@ -1,4 +1,5 @@
 
+using Backend.Core.Interfaces;
 using Backend.Core.Models.Entities;
 using Backend.Core.Utils;
 using Backend.Infrastructure;
@@ -15,88 +16,35 @@ namespace Backend.Modules.Dashboard.Controllers;
 public class DashboardController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IDashboardService _service;
     // public readonly string endpointPrefix = { get }";
-    public DashboardController(AppDbContext context)
+    public DashboardController(AppDbContext context, IDashboardService service)
     {
         _context = context;
+        _service = service;
 
     }
     [ApiExplorerSettings(GroupName = Constants.DashboardApiGroup)]
     [HttpGet("api/population/{noOfCountries}", Name = nameof(GetPopulationChartByCountry))]
-    public async Task<ActionResult<IEnumerable<PopulationDto>>> GetPopulationChartByCountry(short noOfCountries)
+    public async Task<ActionResult> GetPopulationChartByCountry(short noOfCountries)
     {
-        var isSuccess = default(bool);
-        var entities = new List<PerfPopulationGrowthEntity>();
-        try
-        {
-            FormattableString query = DashboardQuery.GetPopulationChartByCountryQuery(noOfCountries);
-            entities = await _context.perfgrowthpopulationds
-           .FromSql(query).ToListAsync();
-            isSuccess = true;
-        }
-        catch (System.Exception ex)
-        {
-            isSuccess = false;
-            throw new Exception("Error fetching population data", ex);
-        }
-
-        var Response = new
-        {
-            data = entities,
-            isSuccess = isSuccess.ToString(),
-        };
+        var Response = await _service.GetPopulationDataAsync<PopulationDto>(noOfCountries);
         return Ok(Response);
     }
 
     [ApiExplorerSettings(GroupName = Constants.DashboardApiGroup)]
     [HttpGet($"api/health", Name = nameof(GetHealthChartByCountry))]
-    public async Task<ActionResult<IEnumerable<HealthDto>>> GetHealthChartByCountry()
+    public async Task<ActionResult> GetHealthChartByCountry()
     {
-        var isSuccess = default(bool);
-        var entities = new List<HealthEntity>();
-        try
-        {
-            FormattableString query = DashboardQuery.GetHealthChartByCountryQuery();
-            entities = await _context.healthstatusds
-           .FromSql(query).ToListAsync();
-            isSuccess = true;
-        }
-        catch (System.Exception ex)
-        {
-            isSuccess = false;
-            throw new Exception("Error fetching health data:", ex);
-        }
-        var Response = new
-        {
-            data = entities,
-            isSuccess = isSuccess.ToString(),
-        };
+        var Response = await _service.GetHealthDataAsync<HealthDto>();
         return Ok(Response);
     }
 
     [ApiExplorerSettings(GroupName = Constants.DashboardApiGroup)]
     [HttpGet($"api/gdppercapita", Name = nameof(GetGDPPerCapitaChartByCountry))]
-    public async Task<ActionResult<IEnumerable<GDPPerCapitaDto>>> GetGDPPerCapitaChartByCountry()
+    public async Task<ActionResult> GetGDPPerCapitaChartByCountry()
     {
-        var isSuccess = default(bool);
-        var entities = new List<GDPPerCapitaEntity>();
-        try
-        {
-            FormattableString query = DashboardQuery.GetGDPPerCapitaChartByCountryQuery();
-            entities = await _context.gdppercapitads
-           .FromSql(query).ToListAsync();
-            isSuccess = true;
-        }
-        catch (System.Exception ex)
-        {
-            isSuccess = false;
-            throw new Exception("Error fetching gdp per capita data :", ex);
-        }
-        var Response = new
-        {
-            data = entities,
-            isSuccess = isSuccess.ToString(),
-        };
+        var Response = await _service.GetGdpPerCapitaDataAsync<GDPPerCapitaDto>();
         return Ok(Response);
     }
 

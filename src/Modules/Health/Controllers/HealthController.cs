@@ -1,4 +1,5 @@
 
+using Backend.Core.Interfaces;
 using Backend.Core.Models.Entities;
 using Backend.Core.Queries;
 using Backend.Core.Utils;
@@ -15,35 +16,18 @@ namespace Backend.Modules.Health.Controllers;
 public class HealthController : ControllerBase
 {
     private readonly AppDbContext _context;
-    public HealthController(AppDbContext context)
+    private readonly IHealthService _service;
+    public HealthController(AppDbContext context, IHealthService service)
     {
         _context = context;
+        _service = service;
     }
 
     [ApiExplorerSettings(GroupName = Constants.HealthApiGroup)]
     [HttpGet("api/country/{countryCode}", Name = nameof(GetHealthStatusByCountryCode))]
-    public async Task<ActionResult<IEnumerable<HealthEntity>>> GetHealthStatusByCountryCode(string countryCode)
+    public async Task<ActionResult> GetHealthStatusByCountryCode(string countryCode)
     {
-        var isSuccess = default(bool);
-        var entities = new List<HealthEntity>();
-        try
-        {
-            FormattableString query = HealthQuery.GetHealthStatusByCountryCodeQuery(countryCode);
-            entities = await _context.healthstatusds
-           .FromSql(query)
-           .ToListAsync();
-            isSuccess = true;
-        }
-        catch (System.Exception ex)
-        {
-            isSuccess = false;
-            throw new Exception("Error fetching health data", ex);
-        }
-        var Response = new
-        {
-            data = entities,
-            isSuccess = isSuccess.ToString(),
-        };
-        return Ok(Response);
+        var data = await _service.GetHealthDataByCountryCodeAsync<HealthDto>(countryCode);
+        return Ok(data);
     }
 }
